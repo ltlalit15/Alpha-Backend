@@ -20,7 +20,7 @@ const problemDetailsSchema = new mongoose.Schema(
             type: String, // Cloudinary URL
             required: true,
         },
-        modelId: {
+        problemId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Model", // Relation with Model
             required: true,

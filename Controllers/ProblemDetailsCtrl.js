@@ -3,10 +3,10 @@ import ProblemDetails from "../Models/ProblemDetailsModel.js";
 // ---- Create ----
 export const createProblemDetails = async (req, res) => {
   try {
-    const { name, modelId, price, warrenty, description } = req.body;
+    const { name, problemId, price, warrenty, description } = req.body;
 
     if (!name) return res.status(400).json({ message: "Name is required" });
-    if (!modelId) return res.status(400).json({ message: "modelId is required" });
+    if (!problemId) return res.status(400).json({ message: "problemId is required" });
     if (!price) return res.status(400).json({ message: "price is required" });
     if (!warrenty) return res.status(400).json({ message: "warrenty is required" });
     if (!description) return res.status(400).json({ message: "description is required" });
@@ -14,7 +14,7 @@ export const createProblemDetails = async (req, res) => {
 
     const newProblemDetail = await ProblemDetails.create({
       name,
-      modelId,
+      problemId,
       price,
       description,
       warrenty,
@@ -30,15 +30,15 @@ export const createProblemDetails = async (req, res) => {
 // ---- Get All (populate with Model → SubCategory → Category) ----
 export const getProblemDetails = async (req, res) => {
   try {
-    const { modelId } = req.query;
+    const { problemId } = req.query;
 
     let query = {};
-    if (modelId) {
-      query.modelId = modelId;
+    if (problemId) {
+      query.problemId = problemId;
     }
 
     const problems = await ProblemDetails.find(query)
-      .populate("modelId", "modelName")
+      .populate("problemId", "modelName")
       .sort({ createdAt: -1 });
 
     const formatted = problems.map((p) => ({
@@ -48,8 +48,8 @@ export const getProblemDetails = async (req, res) => {
       description: p.description,     // agar schema me hai
       price: p.price,                 // agar schema me hai
       image: p.image,                 // agar schema me hai
-      modelId: p.modelId?._id || null,
-      modelName: p.modelId?.modelName || null,
+      problemId: p.problemId?._id || null,
+      modelName: p.problemId?.modelName || null,
       createdAt: p.createdAt,
       updatedAt: p.updatedAt,
     }));
@@ -63,7 +63,7 @@ export const getProblemDetails = async (req, res) => {
 export const editProblemDetails = async (req, res) => {
   try {
     const { id } = req.params; // problem ka id URL se aayega
-    const { name, modelId, price, warrenty, description } = req.body;
+    const { name, problemId, price, warrenty, description } = req.body;
 
     // check id
     if (!id) return res.status(400).json({ message: "ProblemDetails id is required" });
@@ -71,7 +71,7 @@ export const editProblemDetails = async (req, res) => {
     // prepare update data
     const updateData = {};
     if (name) updateData.name = name;
-    if (modelId) updateData.modelId = modelId;
+    if (problemId) updateData.problemId = problemId;
     if (price) updateData.price = price;
     if (warrenty) updateData.warrenty = warrenty;
     if (description) updateData.description = description;
