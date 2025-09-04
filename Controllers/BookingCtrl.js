@@ -3,13 +3,12 @@ import Booking from "../Models/BookingModel.js";
 // ---- Create ----
 export const createBooking = async (req, res) => {
   try {
-    const { name, email, day, time, phone, message, problemId, modelName } = req.body;
+    const { name, email, date, phone, message, problemId, modelName } = req.body;
 
     const newBooking = await Booking.create({
       name,
       email,
-      day,
-      time,
+      date,
       phone,
       message,
       problemId,

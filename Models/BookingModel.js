@@ -8,10 +8,8 @@ const bookingSchema = new mongoose.Schema(
         email: {
             type: String,
         },
-        day: {
-            type: String,
-        },
-        time: {
+
+        date: {
             type: String,
         },
         phone: {
