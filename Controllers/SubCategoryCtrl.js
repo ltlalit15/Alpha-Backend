@@ -23,14 +23,35 @@ export const createSubCategory = async (req, res) => {
 
 // ---- Get All (with Category populated) ----
 export const getSubCategories = async (req, res) => {
+  const { categoryId } = req.query;
   try {
-    const subCategories = await SubCategory.find()
-      .populate("categoryId", "name image"); // sirf name aur image Category ke
-    res.status(200).json(subCategories);
+    let subCategories;
+
+    if (categoryId) {
+      subCategories = await SubCategory.find({ categoryId })
+        .populate("categoryId", "name");
+    } else {
+      subCategories = await SubCategory.find()
+        .populate("categoryId", "name");
+    }
+
+    // format response
+    const formatted = subCategories.map((sub) => ({
+      id: sub?._id,                           // _id → id
+      name: sub?.name,
+      image: sub?.image,
+      categoryId: sub?.categoryId?._id || null,
+      categoryName: sub?.categoryId?.name || null,
+      createdAt: sub?.createdAt,
+      updatedAt: sub?.updatedAt,
+    }));
+
+    res.status(200).json(formatted);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // ---- Delete ----
 export const deleteSubCategory = async (req, res) => {

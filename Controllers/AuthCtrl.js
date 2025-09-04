@@ -40,3 +40,58 @@ export const logins = async (req, res) => {
         res.status(500).json({ message: "Server error", error });
     }
 };
+
+export const getProfile = async (req, res) => {
+    try {
+        const { id } = req.params;
+        // token se user mil gaya (authMiddleware ne `req.user` set kiya hoga)
+        const user = await User.findById(id).select("-password");
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({
+            message: "Profile fetched successfully",
+            user,
+        });
+    } catch (error) {
+        console.error("GetProfile Error:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+
+export const editProfile = async (req, res) => {
+  try {
+    const { name, password, email } = req.body;
+    const { id } = req.params;
+
+    // user find karo
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // fields update karo
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+      },
+    });
+  } catch (error) {
+    console.error("EditProfile Error:", error);
+    res.status(500).json({ message: error.message || "Server error" });
+  }
+};
+

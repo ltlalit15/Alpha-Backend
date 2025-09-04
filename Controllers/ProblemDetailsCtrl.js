@@ -3,7 +3,7 @@ import ProblemDetails from "../Models/ProblemDetailsModel.js";
 // ---- Create ----
 export const createProblemDetails = async (req, res) => {
   try {
-    const { name, modelId , price , warrenty , description } = req.body;
+    const { name, modelId, price, warrenty, description } = req.body;
 
     if (!name) return res.status(400).json({ message: "Name is required" });
     if (!modelId) return res.status(400).json({ message: "modelId is required" });
@@ -30,10 +30,31 @@ export const createProblemDetails = async (req, res) => {
 // ---- Get All (populate with Model → SubCategory → Category) ----
 export const getProblemDetails = async (req, res) => {
   try {
-    const problems = await ProblemDetails.find()
-     .sort({ createdAt: -1 });
+    const { modelId } = req.query;
 
-    res.status(200).json(problems);
+    let query = {};
+    if (modelId) {
+      query.modelId = modelId;
+    }
+
+    const problems = await ProblemDetails.find(query)
+      .populate("modelId", "modelName")
+      .sort({ createdAt: -1 });
+
+    const formatted = problems.map((p) => ({
+      id: p._id,
+      name: p.name,                   // agar schema me hai
+      warrenty: p.warrenty,                   // agar schema me hai
+      description: p.description,     // agar schema me hai
+      price: p.price,                 // agar schema me hai
+      image: p.image,                 // agar schema me hai
+      modelId: p.modelId?._id || null,
+      modelName: p.modelId?.modelName || null,
+      createdAt: p.createdAt,
+      updatedAt: p.updatedAt,
+    }));
+
+    res.status(200).json(formatted);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

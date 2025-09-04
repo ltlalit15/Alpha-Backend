@@ -8,6 +8,7 @@ import MobileModalRouter from "./Routers/MobileModalRouter.js";
 import ProblemDetailsRouter from "./Routers/ProblemDetailsRouter.js";
 import BookingRouter from "./Routers/BookingRouter.js";
 import ContactRouter from "./Routers/ContactRouter.js";
+import DashboardRouter from "./Routers/DashboardRouter.js";
 
 const router = Router();
 
@@ -19,5 +20,6 @@ router.use("/api", MobileModalRouter);
 router.use("/api", ProblemDetailsRouter);
 router.use("/api", BookingRouter);
 router.use("/api", ContactRouter);
+router.use("/api", DashboardRouter);
 
 export default router;

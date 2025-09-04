@@ -12,7 +12,7 @@ export const createModel = async (req, res) => {
     const newModel = await Model.create({
       modelName,
       subCategoryId,
-      image: req.file.path, 
+      image: req.file.path,
     });
 
     res.status(201).json(newModel);
@@ -24,15 +24,30 @@ export const createModel = async (req, res) => {
 // ---- Get All (with populate for SubCategory & Category) ----
 export const getModels = async (req, res) => {
   try {
-    const models = await Model.find()
-      .populate({
-        path: "subCategoryId",
-        select: "name image categoryId",
-        populate: { path: "categoryId", select: "name image" }
-      })
+    const { subCategoryId } = req.query;
+
+    let query = {};
+    if (subCategoryId) {
+      query.subCategoryId = subCategoryId;
+    }
+
+    const models = await Model.find(query)
+      .populate("subCategoryId", "name")  
+    
       .sort({ createdAt: -1 });
 
-    res.status(200).json(models);
+    // format response
+    const formatted = models.map((m) => ({
+      id: m?._id,
+      name: m?.modelName,
+      image: m?.image,
+      subCategoryId: m?.subCategoryId?._id || null,
+      subCategoryName: m?.subCategoryId?.name || null,
+      createdAt: m?.createdAt,
+      updatedAt: m?.updatedAt
+    }));
+
+    res.status(200).json(formatted);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
