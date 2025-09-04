@@ -1,29 +1,48 @@
 import express from "express";
 import dotenv from "dotenv";
-dotenv.config();
-
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import cors from "cors";
-
 import { dbConnect } from "./Config/dbConnect.js";
 import routes from "./app.js";
+import cluster from "cluster";
+import os from "os";
+
+dotenv.config();
 
 const PORT = 3000;
+const numCPUs = os.cpus().length;
 
-const app = express();
+if (cluster.isPrimary) {
+  console.log(`🚀 Master process ${process.pid} is running`);
+  console.log(`⚡ Forking for ${numCPUs} CPUs...`);
 
-dbConnect();
+  // Fork workers for each CPU
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
 
-app.use(cors());
-app.use(morgan("dev"));
-app.use(bodyParser.json({ limit: "50mb" }));
-app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
-app.use(cookieParser());
+  // Restart worker if it crashes
+  cluster.on("exit", (worker, code, signal) => {
+    console.log(`❌ Worker ${worker.process.pid} died. Restarting...`);
+    cluster.fork();
+  });
+} else {
+  // Worker processes
+  const app = express();
 
-app.use(routes);
+  dbConnect();
 
-app.listen(PORT, () => {
-    console.log(`✅ Alpha Server is running on port ${PORT}`);
-});
+  app.use(cors());
+  app.use(morgan("tiny"));
+  app.use(bodyParser.json({ limit: "50mb" }));
+  app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+  app.use(cookieParser());
+
+  app.use(routes);
+
+  app.listen(PORT, () => {
+    console.log(`✅ Worker ${process.pid} running on port ${PORT}`);
+  });
+}
