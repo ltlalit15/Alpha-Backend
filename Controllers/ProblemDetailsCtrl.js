@@ -60,6 +60,38 @@ export const getProblemDetails = async (req, res) => {
   }
 };
 
+export const editProblemDetails = async (req, res) => {
+  try {
+    const { id } = req.params; // problem ka id URL se aayega
+    const { name, modelId, price, warrenty, description } = req.body;
+
+    // check id
+    if (!id) return res.status(400).json({ message: "ProblemDetails id is required" });
+
+    // prepare update data
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (modelId) updateData.modelId = modelId;
+    if (price) updateData.price = price;
+    if (warrenty) updateData.warrenty = warrenty;
+    if (description) updateData.description = description;
+    if (req.file) updateData.image = req.file.path; // new image from cloudinary
+
+    const updatedProblem = await ProblemDetails.findByIdAndUpdate(id, updateData, {
+      new: true, // return updated doc
+      runValidators: true,
+    });
+
+    if (!updatedProblem) {
+      return res.status(404).json({ message: "ProblemDetails not found" });
+    }
+
+    res.status(200).json(updatedProblem);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // ---- Delete ----
 export const deleteProblemDetails = async (req, res) => {
   try {
