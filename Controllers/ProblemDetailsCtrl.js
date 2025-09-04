@@ -1,4 +1,7 @@
 import ProblemDetails from "../Models/ProblemDetailsModel.js";
+import mongoose from "mongoose";
+
+
 
 // ---- Create ----
 export const createProblemDetails = async (req, res) => {
@@ -105,5 +108,65 @@ export const deleteProblemDetails = async (req, res) => {
     res.status(200).json({ message: "Problem detail deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+// controllers/problemDetailsController.js
+
+
+export const getProblemDetailById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate if ID is provided
+    if (!id) {
+      return res.status(400).json({
+        message: "ProblemDetails ID is required",
+      });
+    }
+
+    // Validate if ID is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid ProblemDetails ID format",
+      });
+    }
+
+    // Find ProblemDetails by ID and populate related Problem
+    const problemDetail = await ProblemDetails.findById(id).populate(
+      "problemId",
+      "problem" // Only get the 'problem' field from the Problem collection
+    );
+
+    // Check if document exists
+    if (!problemDetail) {
+      return res.status(404).json({
+        message: "ProblemDetails not found",
+      });
+    }
+
+    // Format response (fix typo: warrenty -> warranty)
+    const formattedResponse = {
+      id: problemDetail._id,
+      name: problemDetail.name,
+      warranty: problemDetail.warranty, // Fixed spelling
+      description: problemDetail.description,
+      price: problemDetail.price,
+      image: problemDetail.image,
+      problemId: problemDetail.problemId?._id || null,
+      Problem: problemDetail.problemId?.problem || null, // From populated field
+      createdAt: problemDetail.createdAt,
+      updatedAt: problemDetail.updatedAt,
+    };
+
+    return res.status(200).json(formattedResponse);
+  } catch (error) {
+    console.error("Error in getProblemDetailById:", error.message);
+    return res.status(500).json({
+      message: "Server error while fetching problem detail",
+      error: error.message,
+    });
   }
 };
