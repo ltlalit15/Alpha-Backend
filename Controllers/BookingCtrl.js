@@ -3,7 +3,7 @@ import Booking from "../Models/BookingModel.js";
 // ---- Create ----
 export const createBooking = async (req, res) => {
   try {
-    const { name, email, date,time, phone, message, problemId, modelName } = req.body;
+    const { name, email, date, time, phone, message, problemId, modelName } = req.body;
 
     const newBooking = await Booking.create({
       name,
@@ -25,7 +25,9 @@ export const createBooking = async (req, res) => {
 // ---- Get All ----
 export const getBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find().sort({ createdAt: -1 });
+    const bookings = await Booking.find()
+      .sort({ createdAt: -1 })
+      .populate('problemId', 'price name');
     res.status(200).json(bookings);
   } catch (error) {
     res.status(500).json({ message: error.message });

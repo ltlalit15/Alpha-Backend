@@ -25,7 +25,8 @@ const bookingSchema = new mongoose.Schema(
             type: String,
         },
         problemId: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "ProblemDetails", // Relation with SubCategory
         }
     },
     { timestamps: true }
