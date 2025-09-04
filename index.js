@@ -15,8 +15,6 @@ const PORT = 3000;
 const numCPUs = os.cpus().length;
 
 if (cluster.isPrimary) {
-  console.log(`🚀 Master process ${process.pid} is running`);
-  console.log(`⚡ Forking for ${numCPUs} CPUs...`);
 
   // Fork workers for each CPU
   for (let i = 0; i < numCPUs; i++) {
@@ -25,7 +23,6 @@ if (cluster.isPrimary) {
 
   // Restart worker if it crashes
   cluster.on("exit", (worker, code, signal) => {
-    console.log(`❌ Worker ${worker.process.pid} died. Restarting...`);
     cluster.fork();
   });
 } else {

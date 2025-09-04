@@ -36,7 +36,6 @@ export const logins = async (req, res) => {
             },
         });
     } catch (error) {
-        console.error("Login Error:", error);
         res.status(500).json({ message: "Server error", error });
     }
 };
@@ -55,7 +54,6 @@ export const getProfile = async (req, res) => {
             user,
         });
     } catch (error) {
-        console.error("GetProfile Error:", error);
         res.status(500).json({ message: "Server error", error });
     }
 };
@@ -90,7 +88,6 @@ export const editProfile = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("EditProfile Error:", error);
     res.status(500).json({ message: error.message || "Server error" });
   }
 };

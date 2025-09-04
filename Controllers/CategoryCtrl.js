@@ -24,7 +24,6 @@ export const createCategory = async (req, res) => {
 
     res.status(201).json(newCategory);
   } catch (error) {
-    console.error("CreateCategory Error:", error);
     res.status(500).json({
       success: false,
       message: error.message || "Internal Server Error",
