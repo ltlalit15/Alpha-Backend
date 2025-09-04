@@ -38,7 +38,7 @@ export const getProblemDetails = async (req, res) => {
     }
 
     const problems = await ProblemDetails.find(query)
-      .populate("problemId", "modelName")
+      .populate("problemId", "problem")
       .sort({ createdAt: -1 });
 
     const formatted = problems.map((p) => ({
@@ -49,7 +49,7 @@ export const getProblemDetails = async (req, res) => {
       price: p.price,                 // agar schema me hai
       image: p.image,                 // agar schema me hai
       problemId: p.problemId?._id || null,
-      modelName: p.problemId?.modelName || null,
+      Problem: p.problemId?.problem || null,
       createdAt: p.createdAt,
       updatedAt: p.updatedAt,
     }));

@@ -5,7 +5,6 @@ const problemDetailsSchema = new mongoose.Schema(
         name: {
             type: String,
             required: true,
-            trim: true,
         },
         price: {
             type: String,
@@ -22,7 +21,7 @@ const problemDetailsSchema = new mongoose.Schema(
         },
         problemId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Model", // Relation with Model
+            ref: "Problem", // Relation with Model
             required: true,
         },
     },
