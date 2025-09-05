@@ -36,7 +36,6 @@ export const createCategory = async (req, res) => {
 export const getCategories = async (req, res) => {
   try {
     const categories = await Category.find()
-      .sort({ createdAt: -1 })
       .populate("problemId", "problem");
 
     const formatted = categories.map((cat) => ({
