@@ -36,15 +36,24 @@ export const createCategory = async (req, res) => {
 export const getCategories = async (req, res) => {
   try {
     const categories = await Category.find()
-      .populate("problemId", "problem");
+      .populate({
+        path: "problemId",
+        model: "Problem",            // Problem collection se populate
+        select: "problem price",     // jo fields chahiye wo select karo
+      })
+      .populate({
+        path: "problemId",
+        model: "ProblemDetails",     // ProblemDetails collection se populate
+        select: "warrenty",          // sirf warranty field chahiye
+      });
 
     const formatted = categories.map((cat) => ({
-      id: cat?._id,                  // _id → id
+      id: cat?._id,
       name: cat?.name,
       image: cat?.image,
-      warrenty: cat?.warrenty,
-      problem: cat?.problemId?.problem || null, // sirf problem ka naam
-      problemId: cat?.problemId?._id || null,   // agar zarurat ho id bhi
+      problem: cat?.problemId?.problem || null,   // Problem se
+      problemId: cat?.problemId?._id || null,
+      warrenty: cat?.problemId?.warrenty || null, // ProblemDetails se
       createdAt: cat?.createdAt,
       updatedAt: cat?.updatedAt,
     }));
@@ -54,6 +63,7 @@ export const getCategories = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 
 // ---- Delete ----
