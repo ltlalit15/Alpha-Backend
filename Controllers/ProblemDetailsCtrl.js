@@ -151,7 +151,7 @@ export const getProblemDetailById = async (req, res) => {
     const formattedResponse = {
       id: problemDetail._id,
       name: problemDetail.name,
-      warranty: problemDetail.warranty, // Fixed spelling
+      warranty: problemDetail.warrenty,
       description: problemDetail.description,
       price: problemDetail.price,
       image: problemDetail.image,
