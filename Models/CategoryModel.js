@@ -1,3 +1,26 @@
+// import mongoose from "mongoose";
+
+// const categorySchema = new mongoose.Schema(
+//   {
+//     name: {
+//       type: String,
+//       required: true,
+//     },
+//     image: {
+//       type: String, 
+//       required: true,
+//     },
+//     problemId: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "Problem", 
+//       required: false, 
+//     },
+//   },
+//   { timestamps: true }
+// );
+
+// export default mongoose.model("Category", categorySchema);
+
 import mongoose from "mongoose";
 
 const categorySchema = new mongoose.Schema(
@@ -12,8 +35,13 @@ const categorySchema = new mongoose.Schema(
     },
     problemId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Problem", 
-      required: false, 
+      refPath: "problemModel",  // dynamic reference
+      required: false,
+    },
+    problemModel: {
+      type: String,
+      required: false,
+      enum: ["Problem", "ProblemDeatails"], // dono collections ke naam
     },
   },
   { timestamps: true }
