@@ -42,6 +42,7 @@ export const getCategories = async (req, res) => {
       id: cat?._id,                  // _id → id
       name: cat?.name,
       image: cat?.image,
+      warrenty: cat?.warrenty,
       problem: cat?.problemId?.problem || null, // sirf problem ka naam
       problemId: cat?.problemId?._id || null,   // agar zarurat ho id bhi
       createdAt: cat?.createdAt,
