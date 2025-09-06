@@ -36,25 +36,15 @@ export const createCategory = async (req, res) => {
 export const getCategories = async (req, res) => {
   try {
     const categories = await Category.find()
-      .populate({
-        path: "problemId",
-        model: "Problem",            // Problem collection se populate
-        select: "problem price warrenty",     // jo fields chahiye wo select karo
-      })
-      .populate({
-        path: "problemId",
-        model: "ProblemDetails",     // ProblemDetails collection se populate
-        select: "warrenty",          // sirf warranty field chahiye
-      });
+      .populate("problemId", "problem");
+  
 
     const formatted = categories.map((cat) => ({
-      id: cat?._id,
+      id: cat?._id,                  // _id → id
       name: cat?.name,
       image: cat?.image,
-      problem: cat?.problemId?.problem || null,   // Problem se
-      problemId: cat?.problemId?._id || null,
-      warrenty: cat?.problemId?.warrenty || null,
-      warrentyData: cat?.problemId?.warrenty || null,
+      problem: cat?.problemId?.problem || null, // sirf problem ka naam
+      problemId: cat?.problemId?._id || null,   // agar zarurat ho id bhi
       createdAt: cat?.createdAt,
       updatedAt: cat?.updatedAt,
     }));
