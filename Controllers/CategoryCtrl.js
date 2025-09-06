@@ -39,7 +39,7 @@ export const getCategories = async (req, res) => {
       .populate({
         path: "problemId",
         model: "Problem",            // Problem collection se populate
-        select: "problem price",     // jo fields chahiye wo select karo
+        select: "problem price warrenty",     // jo fields chahiye wo select karo
       })
       .populate({
         path: "problemId",
@@ -53,7 +53,8 @@ export const getCategories = async (req, res) => {
       image: cat?.image,
       problem: cat?.problemId?.problem || null,   // Problem se
       problemId: cat?.problemId?._id || null,
-      warrenty: cat?.problemId?.warrenty || null, // ProblemDetails se
+      warrenty: cat?.problemId?.warrenty || null,
+      warrentyData: cat?.problemId?.warrenty || null,
       createdAt: cat?.createdAt,
       updatedAt: cat?.updatedAt,
     }));
