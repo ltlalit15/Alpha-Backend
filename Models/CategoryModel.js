@@ -41,7 +41,7 @@ const categorySchema = new mongoose.Schema(
     problemModel: {
       type: String,
       required: false,
-      enum: ["Problem", "ProblemDeatails"], // dono collections ke naam
+      enum: ["Problem", "ProblemDetails"], // dono collections ke naam
     },
   },
   { timestamps: true }
